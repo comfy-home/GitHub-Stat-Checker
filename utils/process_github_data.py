@@ -114,7 +114,8 @@ def process_user_data(data: dict):
         joined_since = format_duration(created_at)
 
         issue_contributions = user_data.get("contributionsCollection", {}).get("totalIssueContributions", 0)
-        issue_comment_contributions = user_data.get("contributionsCollection", {}).get("totalIssueCommentContributions", 0)
+        issues_created = user_data.get("issues", {}).get("totalCount", 0)
+        pull_requests_created = user_data.get("pullRequests", {}).get("totalCount", 0)
 
         return {
             "name": user_data.get("name", ""),
@@ -127,9 +128,10 @@ def process_user_data(data: dict):
             "repositories": user_data.get("repositories").get("totalCount", 0),
             "total_commits": user_data.get("contributionsCollection", {}).get("totalCommitContributions", 0),
             "total_pullrequests": user_data.get("contributionsCollection", {}).get("totalPullRequestContributions", 0),
-            "total_issues": issue_contributions + issue_comment_contributions,
+            "total_issues": issues_created,
             "total_issue_contributions": issue_contributions,
-            "total_issue_comments": issue_comment_contributions,
+            "issues_created": issues_created,
+            "pull_requests_created": pull_requests_created,
             "formatted_date": formatted_date,
             "joined_since": joined_since,
             "github_days": github_days,

@@ -97,6 +97,12 @@ def fetch_user_data(username: str, token: str):
             repositories(ownerAffiliations: OWNER, isFork: false){{
                 totalCount
             }}
+            issues(states: [OPEN, CLOSED]) {{
+                totalCount
+            }}
+            pullRequests(states: [OPEN, CLOSED]) {{
+                totalCount
+            }}
             contributionsCollection {{
                 totalCommitContributions
                 totalPullRequestContributions

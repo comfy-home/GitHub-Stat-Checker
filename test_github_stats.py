@@ -89,20 +89,26 @@ class TestGitHubStats(unittest.TestCase):
                     "followers": {"totalCount": 0},
                     "following": {"totalCount": 0},
                     "repositories": {"totalCount": 1},
+                    "issues": {
+                        "totalCount": 7
+                    },
+                    "pullRequests": {
+                        "totalCount": 4
+                    },
                     "contributionsCollection": {
                         "totalCommitContributions": 10,
                         "totalPullRequestContributions": 2,
-                        "totalIssueContributions": 3,
-                        "totalIssueCommentContributions": 5
+                        "totalIssueContributions": 3
                     }
                 }
             }
         }
 
         result = process_user_data(user_data)
-        self.assertEqual(result.get("total_issues"), 8)
+        self.assertEqual(result.get("total_issues"), 7)
         self.assertEqual(result.get("total_issue_contributions"), 3)
-        self.assertEqual(result.get("total_issue_comments"), 5)
+        self.assertEqual(result.get("issues_created"), 7)
+        self.assertEqual(result.get("pull_requests_created"), 4)
 
 
 if __name__ == '__main__':

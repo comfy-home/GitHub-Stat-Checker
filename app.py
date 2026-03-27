@@ -61,8 +61,9 @@ def main():
                     repositories = user_stats.get("repositories")
                     total_prs = user_stats.get("total_pullrequests")
                     total_issues = user_stats.get("total_issues")
+                    issues_created = user_stats.get("issues_created", 0)
+                    pull_requests_created = user_stats.get("pull_requests_created", 0)
                     issue_contributions = user_stats.get("total_issue_contributions", 0)
-                    issue_comments = user_stats.get("total_issue_comments", 0)
                     created_at = datetime.strptime(user_stats.get("created_at"), "%Y-%m-%dT%H:%M:%SZ")
                     created_at = created_at.strftime("%Y-%m-%d")
 
@@ -84,10 +85,10 @@ def main():
                                             <div class="stat">Repos:<b> {repositories}</b></div>
                                             <div class="stat">Followers:<b> {followers}</b></div>
                                             <div class="stat">Following:<b> {following}</b></div>
-                                            <div class="stat">PRs:<b> {total_prs}</b></div>
-                                            <div class="stat">Issues (opened+commented):<b> {total_issues}</b></div>
-                                            <div class="stat">&nbsp;&nbsp;Created issues:<b> {issue_contributions}</b></div>
-                                            <div class="stat">&nbsp;&nbsp;Issue comments:<b> {issue_comments}</b></div>
+                                            <div class="stat">PRs (created):<b> {pull_requests_created}</b></div>
+                                            <div class="stat">Contribution PRs:<b> {total_prs}</b></div>
+                                            <div class="stat">Issues (created):<b> {issues_created}</b></div>
+                                            <div class="stat">Issue contribution events:<b> {issue_contributions}</b></div>
                                         </div>
                                     </div>
                                 </div>
