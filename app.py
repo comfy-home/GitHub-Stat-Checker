@@ -11,6 +11,26 @@ from utils.streamlit_ui import base_ui, growth_stats
 
 color = "#26a641"
 
+def _show_fetch_errors(name: str, response: dict) -> bool:
+    if response is None:
+        st.error(f"{name}: no response from GitHub API.")
+        return True
+
+    if not isinstance(response, dict):
+        st.error(f"{name}: invalid response type from GitHub API.")
+        return True
+
+    if "errors" in response:
+        st.error(f"{name} API error: {response.get('errors')}")
+        return True
+
+    if "data" in response and response.get("data") is None:
+        st.error(f"{name}: GitHub returned no data for the request. Check username/token and permissions.")
+        return True
+
+    return False
+
+
 def main():
     base_ui() # Base UI containing title, star button and sidebar form
     
@@ -20,8 +40,9 @@ def main():
         user_data = fetch_user_data(sst.username, sst.token)
         repo_data = fetch_repo_data(sst.username, sst.token)
 
-        if "errors" in cont_data or "errors" in user_data or "errors" in repo_data:
-            st.error("Error fetching data. Check your username/token.")
+        if _show_fetch_errors("Contributions", cont_data) or _show_fetch_errors("User", user_data) or _show_fetch_errors("Repos", repo_data):
+            st.error("Error fetching data. Check your username/token and GraphQL permissions (e.g., repo/read:user).")
+            return
         else:
             # Process data
             cont_stats = process_contribution_data(cont_data)
@@ -40,6 +61,9 @@ def main():
                     repositories = user_stats.get("repositories")
                     total_prs = user_stats.get("total_pullrequests")
                     total_issues = user_stats.get("total_issues")
+                    issues_created = user_stats.get("issues_created", 0)
+                    pull_requests_created = user_stats.get("pull_requests_created", 0)
+                    issue_contributions = user_stats.get("total_issue_contributions", 0)
                     created_at = datetime.strptime(user_stats.get("created_at"), "%Y-%m-%dT%H:%M:%SZ")
                     created_at = created_at.strftime("%Y-%m-%d")
 
@@ -61,8 +85,10 @@ def main():
                                             <div class="stat">Repos:<b> {repositories}</b></div>
                                             <div class="stat">Followers:<b> {followers}</b></div>
                                             <div class="stat">Following:<b> {following}</b></div>
-                                            <div class="stat">PRs:<b> {total_prs}</b></div>
-                                            <div class="stat">Issues:<b> {total_issues}</b></div>
+                                            <div class="stat">PRs (created):<b> {pull_requests_created}</b></div>
+                                            <div class="stat">Contribution PRs:<b> {total_prs}</b></div>
+                                            <div class="stat">Issues (created):<b> {issues_created}</b></div>
+                                            <div class="stat">Issue contribution events:<b> {issue_contributions}</b></div>
                                         </div>
                                     </div>
                                 </div>
@@ -387,7 +413,8 @@ def main():
 
             # Add Language Distribution
             st.markdown("### Programming Languages")
-            if sst.user_token:
+            # Use sst.token as the real active token (sst.user_token can be empty if set from secrets and not manually entered)
+            if sst.token:
 
                 # Fetch repository stats
                 repo_stats = process_language_data(repo_data)
