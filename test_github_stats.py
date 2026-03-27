@@ -1,5 +1,5 @@
 import unittest
-from process_github_data import process_language_data
+from utils.process_github_data import process_language_data
 
 class TestGitHubStats(unittest.TestCase):
     def setUp(self):
@@ -52,8 +52,8 @@ class TestGitHubStats(unittest.TestCase):
         # Test normal case
         result = process_language_data(self.mock_data)
         self.assertIsNotNone(result)
-        self.assertEqual(result["Python"], 2)
-        self.assertEqual(result["JavaScript"], 1)
+        self.assertEqual(result["Python"]["count"], 2)
+        self.assertEqual(result["JavaScript"]["count"], 1)
         self.assertEqual(len(result), 2)  # Should not count None language
 
     def test_process_language_data_empty(self):

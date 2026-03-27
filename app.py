@@ -387,7 +387,8 @@ def main():
 
             # Add Language Distribution
             st.markdown("### Programming Languages")
-            if sst.user_token:
+            # Use sst.token as the real active token (sst.user_token can be empty if set from secrets and not manually entered)
+            if sst.token:
 
                 # Fetch repository stats
                 repo_stats = process_language_data(repo_data)
